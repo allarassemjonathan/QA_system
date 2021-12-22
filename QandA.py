@@ -15,10 +15,16 @@ while(q != "Quit"):
     q = input("Ask me a question...(type 'Quit' to quit)")
     if q == "Quit":
         break
+    to_remove = set()
+    for w in model(q):
+        if w.is_punct or w.is_space or w.is_stop:
+            to_remove.add(w.text)
+            
+    for e in to_remove:
+        q = q.replace(e,"")
+    
     question = model(q)
-    for t in question:
-        if t.is_stop or t.is_space or t.is_punct:
-            pass
+    print(question.text)
     max_sim = 0
     answer = None
     for sentence in history_doc.sents:
