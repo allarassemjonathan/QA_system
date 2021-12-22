@@ -1,5 +1,5 @@
 import spacy as s
-from math import log2, factorial
+from math import log2, factorial, sqrt
 # from spacy.pipeline.textcat import DEFAULT_SINGLE_TEXTCAT_MODEL
 # config = {
 #    "threshold": 0.5,
@@ -1037,22 +1037,40 @@ def coherence(s):
         checkdex = 0
         curdex += 1
     # print("SIZE:",size)
-    return ((2*size)/(size-1))*(c/times)
+    if times != 0 and size > 1:
+        return ((2*size)/(size-1))*(c/times)
+    else:
+        return 1.0
 
-def how_similar(s1,s2): #iterable with len() of tokens w/o stops, punct, and space
-    size1 = len(s1)
-    size2 = len(s2)
-    # c1 = coherence(s1)
-    # c2 = coherence(s2)
-    sum_sim = 0
-    for t1 in s1:
-        for t2 in s2:
-            if t1.has_vector and t2.has_vector:
-                sum_sim += t1.similarity(t2)
-    # avg_sim = sum_sim/(log2(size2*size1 + 1))
-    avg_sim = sum_sim/(size1*size2)
-    # avg_sim = (sum_sim/(size1*size2))/(c1*c2)
-    return avg_sim
+# def how_similar(s1,s2): #iterable with len() of tokens w/o stops, punct, and space
+#     size1 = len(s1)
+#     size2 = len(s2)
+#     # c1 = coherence(s1)
+#     # c2 = coherence(s2)
+#     sum_sim = 0
+#     for t1 in s1:
+#         for t2 in s2:
+#             if t1.has_vector and t2.has_vector:
+#                 sum_sim += t1.similarity(t2)
+#     # avg_sim = sum_sim/(log2(size2*size1 + 1))
+#     avg_sim = sum_sim/(size1*size2)
+#     # avg_sim = (sum_sim/(size1*size2))/(c1*c2)
+#     return avg_sim
+
+# def how_similar2(s1,s2):
+#     size1 = len(s1)
+#     size2 = len(s2)
+#     # c1 = coherence(s1)
+#     # c2 = coherence(s2)
+#     prod_sim = 1
+#     for t1 in s1:
+#         for t2 in s2:
+#             if t1.has_vector and t2.has_vector:
+#                 prod_sim *= t1.similarity(t2)
+#                 print(prod_sim)
+#                 if prod_sim == 0:
+#                     return
+#     return (prod_sim*size1*size2)**(1/10)
 
 # i = 0
 # for sent in sample_doc.sents:
@@ -1065,19 +1083,44 @@ def how_similar(s1,s2): #iterable with len() of tokens w/o stops, punct, and spa
 #     i += 1
 # s1 = model("The engine is galvanized.")
 # s1 = model("My ugly baby has diaper rash and needs a binky.")
-s1 = model("The jacket speaks Swahili in a mechanic's noodles.")
+# s1 = model("The jacket speaks Swahili in a mechanic's noodles.")
 # s1 = model("station flatulent station flatulent")
-# s1 = model("My dog is a very obedient canine who is trained to heel and bury bones.")
+# s1 = model("Diesel engine diesel engine diesel engine")
+s1 = model("When was Colonel Sanders born?")
+# s1 = model("Several legends surround Alexander's birth and childhood.")
+# s2 = model("Several legends surround Alexander's birth and childhood. According to the ancient Greek biographer Plutarch, on the eve of the consummation of her marriage to Philip, Olympias dreamed that her womb was struck by a thunderbolt that caused a flame to spread 'far and wide' before dying away. Sometime after the wedding, Philip is said to have seen himself, in a dream, securing his wife's womb with a seal engraved with a lion's image. Plutarch offered a variety of interpretations for these dreams: that Olympias was pregnant before her marriage, indicated by the sealing of her womb; or that Alexander's father was Zeus. Ancient commentators were divided about whether the ambitious Olympias promulgated the story of Alexander's divine parentage, variously claiming that she had told Alexander, or that she dismissed the suggestion as impious.")
+# s2 = model("My dog is a very obedient canine who is trained to heel and bury bones.")
+s3 = model("Alexander was born in 356 BCE at Pella in Macedonia, the son of Philip II and Olympias (daughter of King Neoptolemus of Epirus).")
+# s3 = model("He was born in 356 BCE at Pella in Macedonia, the son of Philip II and Olympias (daughter of King Neoptolemus of Epirus). From age 13 to 16 he was taught by Aristotle, who inspired him with an interest in philosophy, medicine, and scientific investigation, but he was later to advance beyond his teacher’s narrow precept that non-Greeks should be treated as slaves. Left in charge of Macedonia in 340 during Philip’s attack on Byzantium, Alexander defeated the Maedi, a Thracian people. Two years later he commanded the left wing at the Battle of Chaeronea, in which Philip defeated the allied Greek states, and displayed personal courage in breaking the Sacred Band of Thebes, an elite military corps composed of 150 pairs of lovers. A year later Philip divorced Olympias, and, after a quarrel at a feast held to celebrate his father’s new marriage, Alexander and his mother fled to Epirus, and Alexander later went to Illyria. Shortly afterward, father and son were reconciled and Alexander returned, but his position as heir was jeopardized.")
+s4 = model("Hannibal was born in what is present day northern Tunisia, one of many Mediterranean regions colonised by the Canaanites from their homelands in Phoenicia.")
+# s4 = model("Hannibal was one of the sons of Hamilcar Barca, a Carthaginian leader, and an unknown mother. He was born in what is present day northern Tunisia, one of many Mediterranean regions colonised by the Canaanites from their homelands in Phoenicia. He had several sisters whose names are unknown, and two brothers, Hasdrubal and Mago. His brothers-in-law were Hasdrubal the Fair and the Numidian king Naravas. He was still a child when his sisters married, and his brothers-in-law were close associates during his father's struggles in the Mercenary War and the Punic conquest of the Iberian Peninsula. After Carthage's defeat in the First Punic War, Hamilcar set out to improve his family's and Carthage's fortunes. With that in mind and supported by Gades, Hamilcar began the subjugation of the tribes of the Iberian Peninsula. Carthage at the time was in such a poor state that it lacked a navy able to transport his army; instead, Hamilcar had to march his forces across Numidia towards the Pillars of Hercules and then cross the Strait of Gibraltar. According to Polybius, Hannibal much later said that when he came upon his father and begged to go with him, Hamilcar agreed and demanded that he swear that as long as he lived he would never be a friend of Rome. There is even an account of him at a very young age (9 years old) begging his father to take him to an overseas war. In the story, Hannibal's father took him up and brought him to a sacrificial chamber. Hamilcar held Hannibal over the fire roaring in the chamber and made him swear that he would never be a friend of Rome. Other sources report that Hannibal told his father, 'I swear so soon as age will permit...I will use fire and steel to arrest the destiny of Rome.' According to the tradition, Hannibal's oath took place in the town of Peñíscola, today part of the Valencian Community, Spain.")
+# s5 = model("Harland Sanders was born in 1890 and raised on a farm outside Henryville, Indiana (near Louisville, Kentucky). When Sanders was 5 years old, his father died, forcing his mother to work at a canning plant. This left Sanders, as the eldest son, to care for his two younger siblings. After he reached 7 years of age, his mother taught him how to cook. After leaving the family home at the age of 13, Sanders passed through several professions with mixed success. In 1930, Sanders took over a Shell filling station on US Route 25 just outside North Corbin, Kentucky, a small town on the edge of the Appalachian Mountains. It was here that he first served to travelers the recipes that he had learned as a child: fried chicken and other dishes such as steaks and country ham. After four years of serving from his own dining room table, Sanders purchased the larger filling station on the other side of the road and expanded to six tables. By 1936, this had proven successful enough for Sanders to be given the honorary title of Kentucky Colonel by Governor Ruby Laffoon. In 1937 he expanded his restaurant to 142 seats and added a motel he purchased across the street, naming it Sanders Court & Café.")
+s5 = model("Harland Sanders was born in 1890 and raised on a farm outside Henryville, Indiana (near Louisville, Kentucky).")
 # s2 = model("engine engine engine engine engine engine engine engine engine engine engine")
 # 2 - .25 1/4, 3 - 0.33 2/6, 4 - 0.375 3/8, 5 - 0.4 4/10
-# s2 = model("She is such a nice pet.")
-s2 = model("Diesel engines")
+s6 = model("She is such a nice pet.")
+# s2 = model("Diesel engine diesel engine diesel engine")
 # s2 = model("The engine is galvanized.")
 # s2 = model("The car's chasis is made of aluminum.")
 
+
+# s1 = model("Alexander")
+# s2 = model("Alexander")
+
+
 # print(how_similar(s1,s2))
-print(coherence(s1))
-print(coherence(s2))
+# print(how_similar(s1,s3))
+# print(how_similar(s1,s4))
+# print(how_similar(s1,s5))
+# print(how_similar(s1,s6))
+# print(s1.similarity(s2))
+print(s1.similarity(s3))
+print(s1.similarity(s4))
+print(s1.similarity(s5))
+print(s1.similarity(s6))
+
+# # print(coherence(s1))
+# print(coherence(s2))
 
     
 
