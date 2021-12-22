@@ -22,7 +22,7 @@ nlp.add_pipe("sentencizer")
 #Applying it to the text
 doc = nlp(text)
 
-#Naive approach
+#Naive approach. The max similarity is the answer
 maxi = 0
 answer = ''
 for i in doc.sents:
