@@ -22,9 +22,9 @@ def decode(entity):
     return entity
 
 #weighted similarity
-def similary(inp, candidate):
+def weights(inp):
     tokens_input = nlp(highlight(inp))
-    tokens_candidate = nlp(candidate)
+    #tokens_candidate = nlp(candidate)
     weights = []
     dumb = True
     for e in tokens_input:
@@ -37,15 +37,17 @@ def similary(inp, candidate):
             weights.append(1)
             dumb = False
         if dumb:
-            weights.append(1)
-    sum = 0
-    i = 0
-    for c in tokens_candidate:
-        for inpu in tokens_input:
-            sum += weights[i]*inpu.similarity(c)
-            i = i+1
+            weights.append(3)
+    #sum = 0
+    #i = 0
+    #for c in tokens_candidate:
+     #   for inpu in tokens_input:
+      #      sum += weights[i]*inpu.similarity(c)
+       #     i = i+1
     return weights 
-            
+
+def similarity(weights, question, sentence):
+    
 
              
     
